@@ -1,3 +1,4 @@
+import random
 import pygame, sys
 from pygame import gfxdraw
 from lightning import Lightning
@@ -20,6 +21,11 @@ class Game:
 
         return sky
 
+    def shuffle(self, i):
+        if random.random() > 0.75:
+            return random.randint(1, len(self.lightning.pallete) - 1)
+        return i
+
     def draw_sky(self):
         for x in range(LIGHT_WIDTH - 1):
             for y in range(LIGHT_HEIGHT - 1):
@@ -29,16 +35,43 @@ class Game:
                         (
                             x * PIXEL_SIZE,
                             y * PIXEL_SIZE,
-                            PIXEL_SIZE - 1,
-                            PIXEL_SIZE - 1,
+                            PIXEL_SIZE,
+                            PIXEL_SIZE,
                         ),
-                        pygame.Color(self.lightning.pallete[self.sky[x][y]]),
+                        pygame.Color(
+                            self.lightning.pallete[self.shuffle(self.sky[x][y])]
+                        ),
+                    )
+                    
+                    # gfxdraw.box(
+                    #     self.screen,
+                    #     (
+                    #         x * PIXEL_SIZE+4,
+                    #         y * PIXEL_SIZE,
+                    #         PIXEL_SIZE,
+                    #         PIXEL_SIZE,
+                    #     ),
+                    #     pygame.Color(
+                    #         self.lightning.pallete[self.shuffle(self.sky[x][y])]
+                    #     ),
+                    # )
+
+                    gfxdraw.box(
+                        self.screen,
+                        (
+                            (x * PIXEL_SIZE)+2,
+                            y * PIXEL_SIZE,
+                            PIXEL_SIZE-4,
+                            PIXEL_SIZE-4,
+                        ),
+                        pygame.Color(
+                            self.lightning.pallete[self.shuffle(len(self.lightning.pallete)-1)]
+                        ),
                     )
 
     def draw(self):
         self.draw_sky()
         self.lightning.draw()
-        pass
 
     def update(self):
         pygame.display.set_caption(f"Lightning = {self.clock.get_fps():.1f}")
